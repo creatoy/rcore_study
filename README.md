@@ -11,10 +11,15 @@
   * [rCore OS](#2.1)
 
 ## 一些链接:
-- [开源操作系统训练营](https://github.com/LearningOS)
-- [Rust 语言圣经](https://course.rs)
-- Rust 程序设计语言（[中文版](https://kaisery.github.io/trpl-zh-cn/title-page.html)）（[英文版](https://doc.rust-lang.org/stable/book/title-page.html)）
-- [Rust 标准库文档](https://doc.rust-lang.org/std/index.html)
+- 关于 rCore 操作系统学习
+  - [开源操作系统训练营](https://github.com/LearningOS)
+- 关于 Rust
+  - Rust 程序设计语言（[中文版](https://kaisery.github.io/trpl-zh-cn/title-page.html)）（[英文版](https://doc.rust-lang.org/stable/book/title-page.html)）
+  - [Rust 语言圣经](https://course.rs)
+  - 通过例子学 Rust （[中文版](https://rustwiki.org/zh-CN/rust-by-example/)）（[英文版](https://doc.rust-lang.org/rust-by-example/)）
+  - [Rust 标准库文档](https://doc.rust-lang.org/std/index.html)
+- 关于 RISC-V
+
 
 <h2 id="1">第一阶段学习</h2>
 
@@ -37,6 +42,8 @@
 [2023-04-02 函数式语言功能：闭包和迭代器](rust/20230402.md)
 
 [2023-04-04 智能指针](rust/20230404.md)
+
+[2023-04-05 多线程、宏](rust/20230405.md)
 
 ---
 
