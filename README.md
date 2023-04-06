@@ -19,6 +19,9 @@
   - 通过例子学 Rust （[中文版](https://rustwiki.org/zh-CN/rust-by-example/)）（[英文版](https://doc.rust-lang.org/rust-by-example/)）
   - [Rust 标准库文档](https://doc.rust-lang.org/std/index.html)
 - 关于 RISC-V
+  - [RISC-V 特权指令集架构](https://content.riscv.org/wp-content/uploads/2018/05/riscv-privileged-BCN.v7-2.pdf)
+  - [RISC-V 手册：一本开源指令集的指南](http://riscvbook.com/chinese/RISC-V-Reader-Chinese-v2p1.pdf)
+  - [RISC-V 汇编手册](https://github.com/riscv-non-isa/riscv-asm-manual/blob/master/riscv-asm.md)
 
 
 <h2 id="1">第一阶段学习</h2>
@@ -48,9 +51,15 @@
 ---
 
 <h3 id="1.2">RISC-V 处理器</h3>
-> 还未开始。。。
+
+[2023-04-05 RISC-V特权指令级架构 特权级别](riscv/20230405.md)
+
+[2023-04-06 RISC-V特权指令级架构 机器模式、用户模式、监管者模式](riscv/20230406.md)
 
 ---
 
 <h2 id="2">第二阶段学习</h2>
+
+<h2 id="2.1">rCore</h2>
+
 > 还未开始。。。
