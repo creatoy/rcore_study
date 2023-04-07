@@ -13,6 +13,8 @@
 ## 一些链接:
 - 关于 rCore 操作系统学习
   - [开源操作系统训练营](https://github.com/LearningOS)
+  - [rCore 教程书](http://rcore-os.cn/rCore-Tutorial-Book-v3/)
+  - [rCore 实验指导](https://learningos.github.io/rCore-Tutorial-Guide-2023S/)
 - 关于 Rust
   - Rust 程序设计语言（[中文版](https://kaisery.github.io/trpl-zh-cn/title-page.html)）（[英文版](https://doc.rust-lang.org/stable/book/title-page.html)）
   - [Rust 语言圣经](https://course.rs)
@@ -52,6 +54,8 @@
 
 <h3 id="1.2">RISC-V 处理器</h3>
 
+> 为了不让学习的战线拉太长，RISC-V 的部分就粗略地看了一下特权模式相关的部分，先进入操作系统的学习了。（主要是怕前面学了 Rust 马上又要忘了。。。）
+
 [2023-04-05 RISC-V特权指令级架构 特权级别](riscv/20230405.md)
 
 [2023-04-06 RISC-V特权指令级架构 机器模式、用户模式、监管者模式](riscv/20230406.md)
@@ -62,4 +66,4 @@
 
 <h2 id="2.1">rCore</h2>
 
-> 还未开始。。。
+[2023-04-07 搭建实验环境](rcore/20230407.md)
