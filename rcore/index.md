@@ -1,11 +1,32 @@
-[返回主页面](../README.md)
+---
+date: 2023-04-07
+title: rCore OS 实验
+# linkTitle: 
+# noindex: false
+featured: true
+authors:
+  - yang
+series:
+  - rCore OS
+categories:
+  - rcore_study
+tags:
+  - 操作系统
+nav_weight: 3
+nav_icon:
+  vendor: bs
+  name: book
+  color: deepskyblue
+---
 
 [实验环境配置指导](https://learningos.github.io/rCore-Tutorial-Guide-2023S/0setup-devel-env.html)
-
+[操作系统课在线幻灯片](https://www.yuque.com/xyong-9fuoz/qczol5/glemuu?)
 [我的实验仓库](https://github.com/LearningOS/2023s-rcore-creatoy)
 
 
-## 实验环境配置
+## 2023-04-07 搭建实验环境
+
+### 实验环境配置
 
 前面的工具安装都没有什么问题，最后试运行的时候由于使用的 RustSBI 和最新版本 QEMU（使用的是 7.2，教程里是 7.0）不兼容，启动后会卡死无输出。这个问题在 rCore 教程主仓库中有人反馈过：[使用rustsbi-qemu教育版规避rustsbi某些版本与qemu不兼容导致卡死的问题](https://github.com/rcore-os/rCore-Tutorial-v3/issues/110)
 
