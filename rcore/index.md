@@ -19,8 +19,12 @@ nav_icon:
   color: deepskyblue
 ---
 
-[实验环境配置指导](https://learningos.github.io/rCore-Tutorial-Guide-2023S/0setup-devel-env.html)
-[操作系统课在线幻灯片](https://www.yuque.com/xyong-9fuoz/qczol5/glemuu?)
+[rCore 操作系统教程书](http://rcore-os.cn/rCore-Tutorial-Book-v3/index.html)
+
+[实验指导书](https://learningos.github.io/rCore-Tutorial-Guide-2023S/index.html)
+
+[操作系统 slides](https://www.yuque.com/xyong-9fuoz/qczol5/glemuu?)
+
 [我的实验仓库](https://github.com/LearningOS/2023s-rcore-creatoy)
 
 
@@ -60,3 +64,62 @@ vim <rcore_lab_dir>/os/Makefile
 ```sh
 make run
 ```
+
+## 2023-04-11 应用程序与基本执行环境
+
+> 搞了好久 Hugo，把学习记录放到 [Github Pages](https://blog.creatio.top/docs/rcore_study/) 了。
+
+### 构建无 OS 应用的准备工作
+
+> 在项目目录下创建 .cargo/config 文件，用于配置编译/链接参数。可以省去每次构建时手动传递参数。
+>
+> 在这里就把编译目标平台指定为 riscv64gc-unknown-none-elf，不用每次构建都写目标了。只需要加入以下内容：
+> ```toml
+> [build]
+> target = "riscv64gc-unknown-none-elf"
+> ```
+
+1. 移除标准库 std 依赖，只使用 core 核心库
+
+```rust
+use core::xxx;
+#![no_std]
+```
+
+2. 添加 panic 处理函数
+```rust
+#[panic_handler]
+fn panic(_info: &PanicInfo) -> ! {
+  loop {}
+}
+```
+
+3. 移除 main 入口，并定义 _start 入口
+
+```rust
+#![no_main]
+
+#[no_mangle]
+extern "C" fn _start() {
+    loop {};
+}
+```
+
+> #[no_mangle] 标记表示不对下面的标识符进行修改，保留原样。（Rust 在编译的过程中默认会对标识符进行修改，这些标识符就会变得很复杂，这里因为要在别的地方使用 _start 标识符，所以要标记一下告诉编译器不要修改这个标识符，不然就没法找到这里了。）
+
+### 系统调用
+
+操作系统为应用程序提供了一些系统调用，这样应用程序不需要知道系统细节也可以通过这些系统调用使用系统功能。
+
+### 第一章实验问题
+教程书第一章中的代码在 panic 处理中调用了 shutdown，而在 shutdown 中又调用了 panic 函数，这样就导致 QEMU 运行起来后一直循环打印 Panic 的内容。
+看了仓库提供的程序，发现里面的 shutdown 是调用了别的汇编指令而不是 ecall 让 QEMU 退出的：（参考原始代码后的简化版）
+
+```asm
+// QEMU exit.
+unsafe {
+    core::arch::asm!("sw {0}, 0({1})", in(reg)0x13333, in(reg)0x100000);
+}
+
+```
+
