@@ -112,10 +112,10 @@ extern "C" fn _start() {
 操作系统为应用程序提供了一些系统调用，这样应用程序不需要知道系统细节也可以通过这些系统调用使用系统功能。
 
 ### 第一章实验问题
-教程书第一章中的代码在 panic 处理中调用了 shutdown，而在 shutdown 中又调用了 panic 函数，这样就导致 QEMU 运行起来后一直循环打印 Panic 的内容。
+教程书第一章书中的代码在 panic 处理中调用了 shutdown，而在 shutdown 中又调用了 panic 函数，这样就导致 QEMU 运行起来后一直循环打印 Panic 的内容。（ecall 没有让 QEMU 关闭退出。）
 看了仓库提供的程序，发现里面的 shutdown 是调用了别的汇编指令而不是 ecall 让 QEMU 退出的：（参考原始代码后的简化版）
 
-```asm
+```rust
 // QEMU exit.
 unsafe {
     core::arch::asm!("sw {0}, 0({1})", in(reg)0x13333, in(reg)0x100000);
@@ -128,10 +128,47 @@ unsafe {
 
 ## 2023-04-19 批处理系统
 
-> 嘀嘀咕咕：摆烂好多天，该继续学习了。赶紧攀实验。（今天还把钥匙落公司了，又跑回去拿钥匙:(）
+> 嘀嘀咕咕：摸鱼好多天，该继续学习了。赶紧攀实验。（今天还把钥匙落公司了，又跑回去拿钥匙:(）
 
 ### 批处理系统
 批处理系统可以一个接一个地自动运行不同的程序，使系统可以长时间不间断工作。
 
+### Rust 取链接脚本中的符号地址
+在链接脚本中定义的符号可以通过 extern "C" 的函数指针显式转换成 usize（usize 的长度是和硬件架构相关的），这样就得到了它们的地址。如下面这段 bss 清零的程序：
+```rust
+extern "C" {
+    fn sbss(); // 链接脚本中 bss 段的起始地址
+    fn ebss(); // 链接脚本中 bss 段的结束地址
+}
+
+unsafe {
+    core::slice::from_raw_parts_mut(sbss as usize as *mut u8, ebss as usize - sbss as usize).fill(0);
+}
+```
+
 > 嘀嘀咕咕：emmm，又没看多少内容--
+
+## 2023-04-21 继续批处理系统
+
+> 线上课学习
+
+典型的程序布局相对内存布局：
+![program](program_layout.png)
+
+在函数调用时各寄存器的功能描述：
+![register](register.png)
+
+用户态（U）陷入到 S 态时相关的 CSR（控制状态寄存器）：
+![supervisor_csr](supervisor_csr.png)
+
+> 各个模式都有自己对应的 CSR，当发生特权级切换后由硬件自动对这些寄存器写入相应的数值（除了 stvec，我们要提前将它的值设置到 trap 处理函数的地址）。在这里我们只需要关心 S 特权级的 CSR 就行了，因为由 S 态陷入到 M 态时的处理由 RustSBI 完成。
+
+> 默认情况下异常发生后是会陷入 M 态，但是可以通过设置异常代理模式，让异常发生后转入到 S 态来处理。
+
+> 在批处理系统 Trap 处理汇编函数中，__alltraps 紧接着的就是 __restore 符号，也就是执行完了 trap_handler 紧接着就是开始恢复 Trap 上下文了。
+> ```asm
+> # 具体位置在 trap.S 的 9, 10 行
+> .globl __alltraps
+> .globl __restore
+> ```
 
