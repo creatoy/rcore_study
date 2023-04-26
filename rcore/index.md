@@ -32,6 +32,10 @@ nav_icon:
 
 ### 实验环境配置
 
+> 实验环境搭建建议跟着教程中的来，自己搭建别的版本可能会出一些不太好解决的问题。比如我这里用了 7.2 的 QEMU 配合新版本的 RustSBI 后，运行实验程序的时候表现就有一些差异，为了降低查错成本最终还是老实换回了 7.0。（不过编译 QEMU 7.0 也出现了个小问题，将在下面补充）
+
+### QEMU 7.2 不兼容实验使用的 RustSBI 版本
+
 前面的工具安装都没有什么问题，最后试运行的时候由于使用的 RustSBI 和最新版本 QEMU（使用的是 7.2，教程里是 7.0）不兼容，启动后会卡死无输出。这个问题在 rCore 教程主仓库中有人反馈过：[使用rustsbi-qemu教育版规避rustsbi某些版本与qemu不兼容导致卡死的问题](https://github.com/rcore-os/rCore-Tutorial-v3/issues/110)
 
 这个问题可以更新 rustsbi 解决。方法如下：
@@ -63,6 +67,15 @@ vim <rcore_lab_dir>/os/Makefile
 5. 最后再按照实验指导书中的步骤运行程序就可以看到 Hello, world! 输出了。
 ```sh
 make run
+```
+
+### 编译 QEMU 7.0 时出现错误
+编译 QEMU 7.0 的时候，由于宿主机器的 ebpf 版本较高，bpf_program__set_socket_filter 函数被弃用了，需要改成 bpf_program__set_type。[参考](https://gitlab.com/qemu-project/qemu/-/commit/a495eba03c31c96d6a0817b13598ce2219326691)
+具体在我的环境中是修改 qemu/ebpf/ebpf_rss.c 的 52 行：
+```c
+//    bpf_program__set_socket_filter(rss_bpf_ctx->progs.tun_rss_steering_prog);
+//  把上面这行修改成下面这样
+    bpf_program__set_type(rss_bpf_ctx->progs.tun_rss_steering_prog, BPF_PROG_TYPE_SOCKET_FILTER);
 ```
 
 ## 2023-04-11 应用程序与基本执行环境
@@ -152,6 +165,14 @@ unsafe {
 
 > 线上课学习
 
+RISC-V 异常：
+![exception](exception.png)
+
+> 其中**断点**(Breakpoint) 和**执行环境调用**(Environment call) 两种异常是通过在上层软件中执行一条特定的指令触发的：执行 ebreak 这条指令之后就会触发断点异常；而执行 ecall 这条指令时候则会随着 CPU 当前所处特权级而触发不同的异常。这种有意为之的指令又被称为**陷入**或 **trap** 类指令。
+
+Supervisor 的特权指令：
+![supervisor privilage instruction](supervisor_priv_ins.png)
+
 典型的程序布局相对内存布局：
 ![program](program_layout.png)
 
@@ -172,3 +193,7 @@ unsafe {
 > .globl __restore
 > ```
 
+
+## 2023-04-24 多道程序与分时多任务
+
+> 默认情况下，在软件开始响应中断前，硬件会自动禁用所有同特权级中断，所以不会触发同特权级中断导致嵌套中断（但是没法避免高特权级的中断发生）。[RISC-V 架构中的中断](http://rcore-os.cn/rCore-Tutorial-Book-v3/chapter3/4time-sharing-system.html#risc-v)
